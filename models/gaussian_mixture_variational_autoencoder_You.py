@@ -1,9 +1,12 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose
-from tensorflow.image import ResizeMethod
-from tensorflow.nn import relu
+# from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose
+# from tensorflow.image import ResizeMethod
+# from tensorflow.nn import relu
 
+from tensorflow.python.keras.layers import Conv2D, Conv2DTranspose
+from tensorflow.image import ResizeMethod
+from tensorflow.python.keras.activations import leaky_relu
 
 def gaussian_mixture_variational_autoencoder_You(x, dropout_rate, dropout, config):
     outputs = {}

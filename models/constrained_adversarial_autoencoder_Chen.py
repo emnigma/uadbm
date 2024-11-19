@@ -11,7 +11,7 @@ from tensorflow.python.layers.core import Flatten
 def constrained_adversarial_autoencoder_Chen(z, x, dropout_rate, dropout, config):
     outputs = {}
     dim = 64
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = Bunch({
             # Model definition
             'enc_conv': Conv2D(filters=dim, kernel_size=3, padding='same'),
@@ -48,7 +48,7 @@ def constrained_adversarial_autoencoder_Chen(z, x, dropout_rate, dropout, config
         features, z_ = evaluate_encoder(encoder, x)
         outputs['z_'] = z_
 
-    with tf.variable_scope('Decoder'):
+    with tf.compat.v1.variable_scope('Decoder'):
         decoder = Bunch({
             # Model definition
             'dec_1': Dense(np.prod(features.get_shape().as_list()[1:])),
@@ -86,7 +86,7 @@ def constrained_adversarial_autoencoder_Chen(z, x, dropout_rate, dropout, config
     outputs['z_rec'] = evaluate_encoder(encoder, x_hat)[1]
 
     # Discriminator
-    with tf.variable_scope('Discriminator'):
+    with tf.compat.v1.variable_scope('Discriminator'):
         discriminator = [
             Dense(400, activation=leaky_relu),
             Dense(200, activation=leaky_relu),

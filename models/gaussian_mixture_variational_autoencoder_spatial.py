@@ -1,7 +1,10 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D
-from tensorflow.nn import relu
+# from tensorflow.compat.v1.layers import Conv2D
+# from tensorflow.nn import relu
+
+from tensorflow.python.keras.layers import Conv2D
+from tensorflow.python.keras.activations import relu
 
 from models.customlayers import build_unified_encoder, build_unified_decoder
 

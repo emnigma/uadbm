@@ -1,8 +1,10 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Dense
-from tensorflow.nn import leaky_relu
-from tensorflow.python.keras.layers import Flatten, Conv2D, Dropout
+# from tensorflow.compat.v1.layers import Dense
+# from tensorflow.nn import leaky_relu
+from tensorflow.python.keras.layers import Flatten, Conv2D, Dropout, Dense
+
+from tensorflow.python.keras.activations import leaky_relu
 
 from models.customlayers import build_unified_decoder, build_unified_encoder
 
@@ -10,7 +12,7 @@ from models.customlayers import build_unified_decoder, build_unified_encoder
 def constrained_adversarial_autoencoder(z, x, dropout_rate, dropout, config):
     outputs = {}
 
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = build_unified_encoder(x.get_shape().as_list(), config.intermediateResolutions)
 
         temp_out = x
@@ -28,7 +30,7 @@ def constrained_adversarial_autoencoder(z, x, dropout_rate, dropout, config):
 
         outputs['z_'] = z_ = dropout_layer(z_layer(Flatten()(temp_out)), dropout)
 
-    with tf.variable_scope('Decoder'):
+    with tf.compat.v1.variable_scope('Decoder'):
         decoder = build_unified_decoder(config.outputWidth, config.intermediateResolutions, config.numChannels)
         intermediate_conv_reverse = Conv2D(temp_temp_out.get_shape().as_list()[3], 1, padding='same')
 
@@ -41,14 +43,14 @@ def constrained_adversarial_autoencoder(z, x, dropout_rate, dropout, config):
 
         outputs['x_hat'] = temp_out
 
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         # mapping reconstruction to latent space for constrained part
         for layer in encoder:
             temp_out = layer(temp_out)
         outputs['z_rec'] = dropout_layer(z_layer(Flatten()(intermediate_conv(temp_out))))
 
     # Discriminator
-    with tf.variable_scope('Discriminator'):
+    with tf.compat.v1.variable_scope('Discriminator'):
         discriminator = [
             Dense(100, activation=leaky_relu),
             Dense(50, activation=leaky_relu),

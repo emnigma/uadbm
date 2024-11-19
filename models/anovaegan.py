@@ -1,8 +1,8 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D, Flatten
-from tensorflow.compat.v1.layers import Dense
-from tensorflow.python.keras.layers import Conv2D, Dropout, Flatten
+# from tensorflow.compat.v1.layers import Conv2D, Flatten
+# from tensorflow.compat.v1.layers import Dense
+from tensorflow.python.keras.layers import Conv2D, Dropout, Flatten, Dense
 
 from models.customlayers import build_unified_decoder, build_unified_encoder
 
@@ -11,7 +11,7 @@ def anovaegan(x, dropout_rate, dropout, config):
     outputs = {}
 
     # Encoder
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = build_unified_encoder(x.get_shape().as_list(), config.intermediateResolutions)
 
         temp_out = x
@@ -33,7 +33,7 @@ def anovaegan(x, dropout_rate, dropout, config):
         outputs['z_sigma'] = z_sigma = tf.exp(z_log_sigma)
         z_vae = z_mu + tf.random_normal(tf.shape(z_sigma)) * z_sigma
 
-    with tf.variable_scope("Generator"):
+    with tf.compat.v1.variable_scope("Generator"):
         intermediate_conv_reverse = Conv2D(temp_temp_out.get_shape().as_list()[3], 1, padding='same')
         dec_dense = Dense(np.prod(reshape))
         decoder = build_unified_decoder(outputWidth=config.outputWidth, intermediateResolutions=config.intermediateResolutions,
@@ -50,7 +50,7 @@ def anovaegan(x, dropout_rate, dropout, config):
         outputs['out'] = temp_out
 
     # Discriminator
-    with tf.variable_scope('Discriminator'):
+    with tf.compat.v1.variable_scope('Discriminator'):
         discriminator = build_unified_encoder(temp_out.get_shape().as_list(), intermediateResolutions=config.intermediateResolutions, use_batchnorm=False)
         discriminator_dense = Dense(1)
 

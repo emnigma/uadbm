@@ -1,9 +1,11 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import sigmoid
-from tensorflow.compat.v1.layers import Conv2D, Flatten
-from tensorflow.compat.v1.layers import Dense
+# from tensorflow.compat.v1.layers import Conv2D, Flatten
+# from tensorflow.compat.v1.layers import Dense
 from tensorflow.python.keras.layers import Conv2D, Dropout, Flatten
+
+from tensorflow.python.keras.layers import Conv2D, Dense
 
 from models.customlayers import build_unified_decoder, build_unified_encoder
 
@@ -12,7 +14,7 @@ def fanogan(z, x, dropout_rate, dropout, config):
     outputs = {}
 
     # Encoder
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = build_unified_encoder(x.get_shape().as_list(), config.intermediateResolutions)
 
         temp_out = x
@@ -29,7 +31,7 @@ def fanogan(z, x, dropout_rate, dropout, config):
         outputs['z_enc'] = z_enc = tf.nn.tanh(dropout_layer(z_layer(Flatten()(temp_out)), dropout))
 
     # Generator
-    with tf.variable_scope('Generator'):
+    with tf.compat.v1.variable_scope('Generator'):
         intermediate_conv_reverse = Conv2D(temp_temp_out.get_shape().as_list()[3], 1, padding='same')
         dec_dense = Dense(np.prod(reshape))
         generator = build_unified_decoder(config.outputWidth, config.intermediateResolutions, config.numChannels, use_batchnorm=False)
@@ -46,7 +48,7 @@ def fanogan(z, x, dropout_rate, dropout, config):
         outputs['x_'] = x_ = sigmoid(temp_out)
 
     # Discriminator
-    with tf.variable_scope('Discriminator'):
+    with tf.compat.v1.variable_scope('Discriminator'):
         discriminator = build_unified_encoder(x_.get_shape().as_list(), config.intermediateResolutions, use_batchnorm=False)
         discriminator_dense = Dense(1)
 

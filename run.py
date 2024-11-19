@@ -17,7 +17,7 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 
 def main(args):
     # reset default graph
-    tf.reset_default_graph()
+    # tf.reset_default_graph()
     base_path_trainer = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'trainers', f'{args.trainer}.py')
     base_path_network = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', f'{args.model}.py')
     trainer = getattr(SourceFileLoader(args.trainer, base_path_trainer).load_module(), args.trainer)
@@ -47,7 +47,7 @@ def main(args):
             setattr(config, arg, getattr(args, arg))
 
     # Create an instance of the model and train it
-    model = trainer(tf.Session(), config, network=network)
+    model = trainer(tf.compat.v1.Session(), config, network=network)
 
     # Train it
     model.train(dataset_hc)
@@ -64,13 +64,13 @@ def main(args):
         else:
             # evaluate all datasets for best dice without hyper intensity prior
             options['applyHyperIntensityPrior'] = False
-            evaluate_optimal(model, options, Dataset.Brainweb)
+            evaluate_optimal(model, options, Dataset.BRAINWEB)
             evaluate_optimal(model, options, Dataset.MSLUB)
             evaluate_optimal(model, options, Dataset.MSISBI2015)
 
             # evaluate all datasets for best dice without hyper intensity prior
             options['applyHyperIntensityPrior'] = True
-            evaluate_optimal(model, options, Dataset.Brainweb)
+            evaluate_optimal(model, options, Dataset.BRAINWEB)
             evaluate_optimal(model, options, Dataset.MSLUB)
             evaluate_optimal(model, options, Dataset.MSISBI2015)
 
@@ -81,13 +81,13 @@ def main(args):
         evaluate_with_threshold(model, options, args.threshold, args.ds)
     else:
         options['applyHyperIntensityPrior'] = False
-        datasetBrainweb = get_evaluation_dataset(options, Dataset.Brainweb)
+        datasetBrainweb = get_evaluation_dataset(options, Dataset.BRAINWEB)
         _bestDiceVAL, _threshVAL = determine_threshold_on_labeled_patients([datasetBrainweb], model, options, description='VAL')
 
         print(f"Optimal threshold on MS Lesion Validation Set without optimal postprocessing: {_threshVAL} (Dice-Score {_bestDiceVAL})")
 
         # Re-evaluate with the previously determined threshold
-        evaluate_with_threshold(model, options, _threshVAL, Dataset.Brainweb)
+        evaluate_with_threshold(model, options, _threshVAL, Dataset.BRAINWEB)
         evaluate_with_threshold(model, options, _threshVAL, Dataset.MSLUB)
         evaluate_with_threshold(model, options, _threshVAL, Dataset.MSISBI2015)
 
@@ -108,6 +108,7 @@ def evaluate_optimal(model, options, dataset):
     epochs = str(options['train']['numEpochs'])
     description = f'{type(evaluation_dataset).__name__}_upperbound_{options["threshold"]}{hyper_intensity_prior_str}'
     # Evaluate
+    # this
     evaluate(evaluation_dataset, model, options, description=description, epoch=epochs)
 
 

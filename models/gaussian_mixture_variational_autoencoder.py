@@ -1,9 +1,12 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D
-from tensorflow.compat.v1.layers import Dense
-from tensorflow.nn import relu
+# from tensorflow.compat.v1.layers import Conv2D
+# from tensorflow.compat.v1.layers import Dense
+# from tensorflow.nn import relu
 from tensorflow.python.keras.layers import Flatten, Dropout
+
+from tensorflow.python.keras.layers import Conv2D, Dense
+from tensorflow.python.keras.activations import relu
 
 from models.customlayers import build_unified_encoder, build_unified_decoder
 
@@ -11,14 +14,14 @@ from models.customlayers import build_unified_encoder, build_unified_decoder
 def gaussian_mixture_variational_autoencoder(x, dropout_rate, dropout, config):
     layers = {}
     # encoding network q(z|x) and q(w|x)
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = build_unified_encoder(x.get_shape().as_list(), config.intermediateResolutions)
 
         temp_out = x
         for layer in encoder:
             temp_out = layer(temp_out)
 
-    with tf.variable_scope("Bottleneck"):
+    with tf.compat.v1.variable_scope("Bottleneck"):
         intermediate_conv = Conv2D(temp_out.get_shape().as_list()[3] // 8, 1, padding='same')
         intermediate_conv_reverse = Conv2D(temp_out.get_shape().as_list()[3], 1, padding='same')
         dropout_layer = Dropout(dropout_rate)
@@ -57,7 +60,7 @@ def gaussian_mixture_variational_autoencoder(x, dropout_rate, dropout, config):
     layers['z_wc_sampled'] = z_wc_mus + tf.random_normal(tf.shape(z_wc_log_sigma_invs)) * tf.exp(z_wc_log_sigma_invs)
 
     # decoder p(x|z)
-    with tf.variable_scope('Decoder'):
+    with tf.compat.v1.variable_scope('Decoder'):
         decoder = build_unified_decoder(config.outputWidth, config.intermediateResolutions, config.numChannels)
 
         for layer in decoder:

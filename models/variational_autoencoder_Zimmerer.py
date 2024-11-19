@@ -1,6 +1,7 @@
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose, Flatten, Dense
-from tensorflow.nn import leaky_relu
+# from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose, Flatten, Dense
+from tensorflow.python.keras.layers import Conv2D, Conv2DTranspose, Flatten, Dense
+from tensorflow.python.keras.activations import leaky_relu
 
 
 def variational_autoencoder_Zimmerer(x, dropout_rate, dropout, config):

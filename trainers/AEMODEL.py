@@ -25,8 +25,8 @@ class AEMODEL(DLMODEL, ABC):
     def __init__(self, sess, config=Config(), network=None):
         super().__init__(sess, config)
         self.losses = {}
-        self.dropout = tf.placeholder(tf.bool, name='dropout')
-        self.dropout_rate = tf.placeholder(tf.float32, name='dropout_rate')
+        self.dropout = tf.compat.v1.placeholder(tf.bool, name='dropout')
+        self.dropout_rate = tf.compat.v1.placeholder(tf.float32, name='dropout_rate')
 
         self.network = network
         self.checkpointDir = os.path.join(self.config.checkpointDir, self.network.__name__)

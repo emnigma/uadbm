@@ -36,7 +36,8 @@ class DLMODEL(object):
         self.config = config
         self.variables = {}
         self.curves = {}  # For plotting via matplotlib
-        self.phase = tf.placeholder(tf.bool, name='phase')
+        tf.compat.v1.disable_eager_execution()
+        self.phase = tf.compat.v1.placeholder(tf.bool, name='phase')
         self.handles = {}
         if self.config.useMatplotlib:
             self.handles['curves'] = matplotlib.pyplot.figure()
@@ -112,18 +113,18 @@ class DLMODEL(object):
     @staticmethod
     def create_optimizer(loss, var_list=(), learningrate=0.001, type='ADAM', beta1=0.05, momentum=0.9, name='optimizer', minimize=True, scope=None):
         if type == 'ADAM':
-            optim = tf.train.AdamOptimizer(learningrate, beta1=beta1, name=name)
+            optim = tf.compat.v1.train.AdamOptimizer(learningrate, beta1=beta1, name=name)
         elif type == 'SGD':
-            optim = tf.train.GradientDescentOptimizer(learningrate)
+            optim = tf.compat.v1.train.GradientDescentOptimizer(learningrate)
         elif type == 'MOMENTUM':
-            optim = tf.train.MomentumOptimizer(learning_rate=learningrate, momentum=momentum)
+            optim = tf.compat.v1.train.MomentumOptimizer(learning_rate=learningrate, momentum=momentum)
         elif type == 'RMS':
-            optim = tf.train.RMSPropOptimizer(learning_rate=learningrate, momentum=momentum)
+            optim = tf.compat.v1.train.RMSPropOptimizer(learning_rate=learningrate, momentum=momentum)
         else:
             raise ValueError('Invalid optimizer type')
 
         if minimize:
-            update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+            update_ops = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 train_op = optim.minimize(loss, var_list=var_list)
             return train_op
@@ -134,17 +135,17 @@ class DLMODEL(object):
     def get_number_of_trainable_params():
         def inner_get_number_of_trainable_params(_scope):
             total_parameters = 0
-            _variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, _scope)
+            _variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, _scope)
             for variable in _variables:
                 # shape is an array of tf.Dimension
                 shape = variable.get_shape()
                 variable_parametes = 1
                 for dim in shape:
-                    variable_parametes *= dim.value
+                    variable_parametes *= dim
                 total_parameters += variable_parametes
             return total_parameters
 
-        variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, "")
+        variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, "")
         scopes = list(set(map(lambda variable: os.path.split(os.path.split(variable.name)[0])[0], variables)))
         for scope in scopes:
             if scope != '':
