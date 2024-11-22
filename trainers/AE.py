@@ -49,7 +49,6 @@ class AE(AEMODEL):
             # Increment last_epoch counter and save model
             last_epoch += 1
 
-            breakpoint()
             self.save(self.checkpointDir, last_epoch)
 
             ##############

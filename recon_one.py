@@ -133,17 +133,17 @@ if dataset_hc.options.sliceEnd:
     slice_end = min(dataset_hc.options.sliceEnd, nii.num_slices_along_axis(dataset_hc.options.axis))
 for s in range(slice_start, slice_end):
     slice_data = nii.get_slice(s, dataset_hc.options.axis)
-    slice_seg = nii_seg.get_slice(s, dataset_hc.options.axis).astype(int)
-    slice_skullmap = nii_skullmap.get_slice(s, dataset_hc.options.axis).astype(int)
+    # slice_seg = nii_seg.get_slice(s, dataset_hc.options.axis).astype(int)
+    # slice_skullmap = nii_skullmap.get_slice(s, dataset_hc.options.axis).astype(int)
 
     if dataset_hc.options.sliceResolution is not None:
         zoom_factor = tuple([i / j for (i, j) in zip(dataset_hc.options.sliceResolution, slice_data.shape)])
         slice_data = scipy.ndimage.zoom(slice_data, zoom_factor)
-        slice_seg = scipy.ndimage.zoom(slice_seg, zoom_factor, mode="nearest")
-        slice_skullmap = scipy.ndimage.zoom(slice_skullmap, zoom_factor, mode="nearest")
+        # slice_seg = scipy.ndimage.zoom(slice_seg, zoom_factor, mode="nearest")
+        # slice_skullmap = scipy.ndimage.zoom(slice_skullmap, zoom_factor, mode="nearest")
 
     x = np.expand_dims(slice_data, 2)
-    labelmaps = np.expand_dims(slice_seg, 2)
+    # labelmaps = np.expand_dims(slice_seg, 2)
     results = modelObj.reconstruct(x)
     x_rec = results['reconstruction']
 
