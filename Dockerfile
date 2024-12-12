@@ -26,4 +26,4 @@ COPY recon_one.py recon_one.py
 COPY content content
 COPY config.json config.json
 
-CMD ["python3", "recon_one.py"]
+ENTRYPOINT ["python3", "recon_one.py"]

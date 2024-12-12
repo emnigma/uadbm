@@ -101,20 +101,17 @@ def recon(args):
     modelObj.load_checkpoint()
     patient = dataset_pc.patients[1]
 
-    
-
     patient = {
-        'name': os.path.basename(patient["name"]),
+        'name': os.path.basename(str(args.nii_filename)),
         'type': "NORMAL",
-        'fullpath': patient["fullpath"]
+        'fullpath': str(args.nii_filename)
     }
     patient['filtered_files'] = patient['fullpath']
 
     patient["groundtruth_filename"] = "content/data/Brainweb/groundtruth/normal.nii.gz"
 
     nii_filename = patient["filtered_files"]
-    output_dir = Path(f"./{Path(nii_filename).name}")
-    Path.mkdir(output_dir, exist_ok=True)
+    output_dir = args.outdir
 
     recon_eval(nii_filename, patient, datasetObj = dataset_hc, options=options, modelObj=modelObj, output_dir = output_dir)
 
@@ -259,8 +256,9 @@ def recon_eval(nii_filename, patient, datasetObj, options, modelObj, output_dir)
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Framework')
-    args.add_argument("--nii", type=Path, help="Patient path", dest="nii_filename", default=Path("content/data/Brainweb/normal/t2_icbm_normal_1mm_pn0_rf0.nii.gz"))
-    args.add_argument('-c', '--config', default='config.json', type=str, help='config-path')
+    args.add_argument("--nii", type=Path, help="Patient path", dest="nii_filename", required=True)
+    args.add_argument("--outdir", type=Path, help="Output dir", required=True)
+    args.add_argument('-c', '--config', default='config.default.json', type=str, help='config-path')
     args.add_argument('-b', '--batchsize', default=8, type=int, help='batchsize')
     args.add_argument('-l', '--lr', default=0.0001, type=float, help='learning rate')
     args.add_argument('-E', '--numEpochs', default=1000, type=int, help='how many epochs to train')
