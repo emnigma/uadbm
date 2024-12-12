@@ -12,7 +12,7 @@ def _int64_feature(value):
 
 
 def write_tf_record(images, labels, sets, filename):
-    writer = tf.python_io.TFRecordWriter(filename)
+    writer = tf.io.TFRecordWriter(filename)
     for i in range(0, images.shape[0]):
         img = images[i]
         label = labels[i]
@@ -37,7 +37,7 @@ def read_tf_record(filename):
     images = []
     labels = []
     sets = []
-    record_iterator = tf.python_io.tf_record_iterator(path=filename)
+    record_iterator = tf.compat.v1.io.tf_record_iterator(filename)
     for string_record in record_iterator:
         example = tf.train.Example()
         example.ParseFromString(string_record)

@@ -1,0 +1,17 @@
+imageio
+keras
+matplotlib
+nibabel
+nptyping
+numpy
+opencv-python
+pillow
+requests
+scikit-image
+scikit-learn
+scipy
+SimpleITK
+six
+tensorflow
+tqdm
+pynrrd

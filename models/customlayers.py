@@ -1,9 +1,10 @@
 import math
 
 import tensorflow as tf
-from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose, BatchNormalization
-from tensorflow.keras.layers import LeakyReLU, ReLU, LayerNormalization
+from tensorflow.python.keras.layers import Conv2D, Conv2DTranspose
+from tensorflow.python.keras.layers import LeakyReLU, ReLU
 
+from tensorflow.keras.layers import BatchNormalization, LayerNormalization
 
 def sample(dec_dense, decoder, reshape, tensor, zDim):
     sampled = tf.random.normal(shape=(tf.shape(tensor)[0], zDim))

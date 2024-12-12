@@ -17,8 +17,8 @@ class fAnoGAN(AEMODEL):
 
     def __init__(self, sess, config, network=None):
         super().__init__(sess, config, network)
-        self.x = tf.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
-        self.z = tf.placeholder(tf.float32, [None, self.config.zDim], name='z')
+        self.x = tf.compat.v1.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
+        self.z = tf.compat.v1.placeholder(tf.float32, [None, self.config.zDim], name='z')
 
         self.outputs = self.network(self.z, self.x, dropout_rate=self.dropout_rate, dropout=self.dropout, config=self.config)
         self.z_enc = self.outputs['z_enc']
@@ -40,11 +40,11 @@ class fAnoGAN(AEMODEL):
         # Print Stats
         self.get_number_of_trainable_params()
         # Instantiate Saver
-        self.saver = tf.train.Saver()
+        self.saver = tf.compat.v1.train.Saver()
 
     def train(self, dataset):
         # Determine trainable variables
-        self.variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+        self.variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
 
         # Build losses
         self.losses['disc_real'] = disc_real = tf.reduce_mean(self.d)
@@ -65,7 +65,7 @@ class fAnoGAN(AEMODEL):
         self.losses['L1'] = tf.losses.absolute_difference(self.x, self.x_enc, reduction=Reduction.NONE)
         self.losses['reconstructionLoss'] = self.losses['loss'] = tf.reduce_mean(tf.reduce_sum(self.losses['L1'], axis=[1, 2, 3]))
 
-        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+        with tf.control_dependencies(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.UPDATE_OPS)):
             # Set the optimizer
             t_vars = tf.trainable_variables()
             dis_vars = [var for var in t_vars if 'Discriminator' in var.name]

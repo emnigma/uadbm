@@ -16,19 +16,19 @@ class CE(AEMODEL):
 
     def __init__(self, sess, config, network=None):
         super().__init__(sess, config, network)
-        self.x = tf.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
-        self.x_ce = tf.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='input_ce')
+        self.x = tf.compat.v1.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
+        self.x_ce = tf.compat.v1.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='input_ce')
         self.outputs = self.network(self.x_ce, dropout_rate=self.dropout_rate, dropout=self.dropout, config=self.config)
         self.reconstruction = self.outputs['x_hat']
 
         # Print Stats
         self.get_number_of_trainable_params()
         # Instantiate Saver
-        self.saver = tf.train.Saver()
+        self.saver = tf.compat.v1.train.Saver()
 
     def train(self, dataset):
         # Determine trainable variables
-        self.variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+        self.variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
 
         # Build losses
         self.losses['L1'] = tf.losses.absolute_difference(self.x, self.reconstruction, reduction=Reduction.NONE)

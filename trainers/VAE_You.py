@@ -18,8 +18,8 @@ class VAE_You(AEMODEL):
 
     def __init__(self, sess, config, network=None):
         super().__init__(sess, config, network)
-        self.x = tf.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
-        self.tv_lambda = tf.placeholder(tf.float32, shape=())
+        self.x = tf.compat.v1.placeholder(tf.float32, [None, self.config.outputHeight, self.config.outputWidth, self.config.numChannels], name='x')
+        self.tv_lambda = tf.compat.v1.placeholder(tf.float32, shape=())
 
         # Additional Parameters
         self.restore_lr = self.config.restore_lr
@@ -34,11 +34,11 @@ class VAE_You(AEMODEL):
         # Print Stats
         self.get_number_of_trainable_params()
         # Instantiate Saver
-        self.saver = tf.train.Saver()
+        self.saver = tf.compat.v1.train.Saver()
 
     def train(self, dataset):
         # Determine trainable variables
-        self.variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
+        self.variables = tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES)
 
         # Build losses
         self.losses['L1'] = tf.losses.absolute_difference(self.x, self.reconstruction, reduction=Reduction.NONE)

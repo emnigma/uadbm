@@ -1,9 +1,5 @@
 {
-  "BRAINWEBDIR": "path/to/Brainweb",
-  "MSKRIDIR": "path/to/MSKRI",
-  "MSSEG2008DIR": "path/to/MSSEG2008",
-  "MSISBI2015DIR": "path/to/ISBIMSlesionChallenge",
-  "MSLUBDIR": "path/to/MSlub",
-  "CHECKPOINTDIR": "path/to/saved/checkpoints",
-  "SAMPLEDIR": "path/to/saved/sample_dir"
+  "BRAINWEBDIR": "./content/data/Brainweb",
+  "CHECKPOINTDIR": "./content/saved/checkpoints",
+  "SAMPLEDIR": "./content/saved/sample_dir"
 }

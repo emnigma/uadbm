@@ -1,8 +1,13 @@
 import numpy as np
 import tensorflow as tf
 from bunch import Bunch
-from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose, Dense
-from tensorflow.keras.layers import ReLU, Add, LayerNormalization, AvgPool2D
+# from tensorflow.compat.v1.layers import Conv2D, Conv2DTranspose, Dense
+# from tensorflow.keras.layers import ReLU, Add, LayerNormalization, AvgPool2D
+
+from tensorflow.python.keras.layers import ReLU, Add, Conv2D, Conv2DTranspose, Dense
+from tensorflow.keras.layers import LayerNormalization, AvgPool2D
+
+
 from tensorflow.python.keras.layers import Flatten
 
 from models.customlayers import build_unified_encoder
@@ -12,7 +17,7 @@ def fanogan_schlegl(z, x, dropout_rate, dropout, config):
     outputs = {}
     dim = 64
     # Encoder
-    with tf.variable_scope('Encoder'):
+    with tf.compat.v1.variable_scope('Encoder'):
         encoder = build_unified_encoder(x.get_shape().as_list(), intermediateResolutions=config.intermediateResolutions)
         enc_dense = Dense(config.zDim)
 
@@ -22,7 +27,7 @@ def fanogan_schlegl(z, x, dropout_rate, dropout, config):
         outputs['z_enc'] = z_enc = tf.nn.tanh(enc_dense(Flatten()(temp_out)))  # restricting encoder outputs to range [-1;1]
 
     # Generator
-    with tf.variable_scope('Generator'):
+    with tf.compat.v1.variable_scope('Generator'):
         generator = Bunch({
             # Model definition
             'gen_1': Dense(np.prod(config.intermediateResolutions) * 8 * dim),
@@ -61,7 +66,7 @@ def fanogan_schlegl(z, x, dropout_rate, dropout, config):
         outputs['x_enc'] = x_enc = evaluate_generator(generator, z_enc, config.intermediateResolutions, dim)
 
     # Discriminator
-    with tf.variable_scope('Discriminator'):
+    with tf.compat.v1.variable_scope('Discriminator'):
         discriminator = Bunch({
             # Model definition
             'dis_conv': Conv2D(dim, 3, padding='same'),
