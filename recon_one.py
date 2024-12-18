@@ -250,7 +250,7 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser(description='Framework')
     args.add_argument("--nii", type=Path, help="Patient path", dest="nii_filename", required=True)
     args.add_argument("--outdir", type=Path, help="Output dir", required=True)
-    args.add_argument('-c', '--config', default='config.default.json', type=str, help='config-path')
+    args.add_argument('-c', '--config', default='config.json', type=str, help='config-path')
     args.add_argument('-b', '--batchsize', default=8, type=int, help='batchsize')
     args.add_argument('-l', '--lr', default=0.0001, type=float, help='learning rate')
     args.add_argument('-E', '--numEpochs', default=1000, type=int, help='how many epochs to train')
